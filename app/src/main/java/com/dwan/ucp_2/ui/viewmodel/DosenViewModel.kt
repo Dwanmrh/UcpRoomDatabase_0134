@@ -54,6 +54,10 @@ class DosenViewModel(private val repositoryDosen: RepositoryDosen) : ViewModel()
 }
 
 data class DosenUiState(
+    val listDsn:List<Dosen> = listOf(),
+    val isLoading: Boolean = false,
+    val isError: Boolean = false,
+    val errorMessage: String = "",
     val dosenEvent: DosenEvent = DosenEvent(),
     val isEntryValid: FormErrorState = FormErrorState(),
     val snackBarMessage: String? = null
