@@ -9,6 +9,18 @@ import com.dwan.ucp_2.repository.RepositoryDosen
 
 class DosenViewModel(private val repositoryDosen: RepositoryDosen) : ViewModel() {
 
+    var uiState by mutableStateOf(DosenUiState())
+
+    private fun validateFields(): Boolean {
+        val event = uiState.dosenEvent
+        val errorState = FormErrorState(
+            nidn = if (event.nidn.isNotEmpty()) null else "NIDN Tidak Boleh Kosong",
+            nama = if (event.nama.isNotEmpty()) null else "Nama Tidak Boleh Kosong",
+            jenisKelamin = if (event.jenisKelamin.isNotEmpty()) null else "Jenis Kelamin Tidak Boleh Kosong"
+        )
+        uiState = uiState.copy(isEntryValid = errorState)
+        return errorState.isValid()
+    }
 }
 
 data class DosenUiState(
