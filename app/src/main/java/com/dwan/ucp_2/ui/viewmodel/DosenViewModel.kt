@@ -11,7 +11,13 @@ class DosenViewModel(private val repositoryDosen: RepositoryDosen) : ViewModel()
 
 }
 
-data class formErrorState(
+data class DosenUiState(
+    val dosenEvent: DosenEvent = DosenEvent(),
+    val isEntryValid: FormErrorState = FormErrorState(),
+    val snackBarMessage: String? = null
+)
+
+data class FormErrorState(
     val nidn: String? = null,
     val nama: String? = null,
     val jenisKelamin: String? = null
@@ -28,7 +34,7 @@ fun DosenEvent.toDosenEntity(): Dosen = Dosen(
 )
 
 data class DosenEvent(
-    val nidn: String,
-    val nama: String,
-    val jenisKelamin: String
+    val nidn: String = "",
+    val nama: String = "",
+    val jenisKelamin: String = ""
 )
