@@ -11,6 +11,12 @@ class DosenViewModel(private val repositoryDosen: RepositoryDosen) : ViewModel()
 
 }
 
+fun DosenEvent.toDosenEntity(): Dosen = Dosen(
+    nidn = nidn,
+    nama = nama,
+    jenisKelamin = jenisKelamin
+)
+
 data class DosenEvent(
     val nidn: String,
     val nama: String,
