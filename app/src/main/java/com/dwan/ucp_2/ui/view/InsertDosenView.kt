@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -20,6 +21,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.dwan.ucp_2.ui.customwidget.AppBar
@@ -52,7 +54,7 @@ fun InsertDosenView(
 
     Scaffold(
         modifier = Modifier,
-        snackbarHost = { SnackbarHostState(hostState = snackbarHostState)}
+        snackbarHost = { SnackbarHost(hostState = snackbarHostState)}
     ) { padding ->
         Column(
             modifier = Modifier
@@ -68,6 +70,7 @@ fun InsertDosenView(
         }
     }
 }
+
 
 @Composable
 fun InsertBodyDosen(
@@ -85,6 +88,7 @@ fun InsertBodyDosen(
     }
 }
 
+@Preview(showBackground = true)
 @Composable
 fun FormDosen(
     dosenEvent: DosenEvent = DosenEvent(),
