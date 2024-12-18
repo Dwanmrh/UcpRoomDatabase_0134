@@ -1,5 +1,6 @@
 package com.dwan.ucp_2.ui.viewmodel
 
+import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -7,11 +8,47 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.dwan.ucp_2.data.entity.Dosen
 import com.dwan.ucp_2.repository.RepositoryDosen
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.filterNotNull
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onStart
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
 class DosenViewModel(private val repositoryDosen: RepositoryDosen) : ViewModel() {
 
     var uiState by mutableStateOf(DosenUiState())
+    val dosenUiState: StateFlow<DosenUiState> = repositoryDosen.getAllDosen()
+        .filterNotNull()
+        .map {
+            DosenUiState(
+                listDsn = it.toList(),
+                isLoading = false,
+            )
+        }
+        .onStart {
+            emit(DosenUiState(isLoading = true))
+            delay(900)
+        }
+        .catch {
+            emit(
+                DosenUiState(
+                    isLoading =false,
+                    isError = true,
+                    errorMessage = it.message ?: "Terjadi Kesalahan"
+                )
+            )
+        }
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5000),
+            initialValue = DosenUiState(
+                isLoading = true,
+            )
+        )
 
     private fun validateFields(): Boolean {
         val event = uiState.dosenEvent
