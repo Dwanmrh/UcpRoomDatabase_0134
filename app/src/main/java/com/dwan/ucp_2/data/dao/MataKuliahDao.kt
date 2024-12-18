@@ -2,10 +2,11 @@ package com.dwan.ucp_2.data.dao
 
 import androidx.room.Dao
 import androidx.room.Delete
+import androidx.room.Insert
 import androidx.room.Query
 import androidx.room.Update
 import com.dwan.ucp_2.data.entity.MataKuliah
-import java.util.concurrent.Flow
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface MataKuliahDao {
@@ -25,4 +26,7 @@ interface MataKuliahDao {
     // update Mk
     @Update
     suspend fun updateMk(mataKuliah: MataKuliah)
+
+    @Insert
+    suspend fun insertMk(mataKuliah: MataKuliah)
 }
