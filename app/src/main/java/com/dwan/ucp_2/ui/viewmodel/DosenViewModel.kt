@@ -11,6 +11,16 @@ class DosenViewModel(private val repositoryDosen: RepositoryDosen) : ViewModel()
 
 }
 
+data class formErrorState(
+    val nidn: String? = null,
+    val nama: String? = null,
+    val jenisKelamin: String? = null
+) {
+    fun isValid(): Boolean {
+        return nidn == null && nama == null && jenisKelamin == null
+    }
+}
+
 fun DosenEvent.toDosenEntity(): Dosen = Dosen(
     nidn = nidn,
     nama = nama,
