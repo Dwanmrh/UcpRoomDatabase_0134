@@ -1,6 +1,7 @@
 package com.dwan.ucp_2.ui.viewmodel
 
 import androidx.lifecycle.ViewModel
+import com.dwan.ucp_2.data.entity.Dosen
 import com.dwan.ucp_2.data.entity.MataKuliah
 import com.dwan.ucp_2.repository.RepositoryDosen
 import com.dwan.ucp_2.repository.RepositoryMataKuliah
@@ -8,6 +9,16 @@ import com.dwan.ucp_2.repository.RepositoryMataKuliah
 class MataKuliahViewModel(private val repositoryMataKuliah: RepositoryMataKuliah) : ViewModel() {
 
 }
+
+data class MkUiState(
+    val listDsn:List<MataKuliah> = listOf(),
+    val isLoading: Boolean = false,
+    val isError: Boolean = false,
+    val errorMessage: String = "",
+    val mataKuliahEvent: MataKuliahEvent,
+    val isEntryValid: FormErrorState = FormErrorState(),
+    val snackBarMessage: String? = null
+)
 
 data class FormErrorStateMk(
     val kodeMk: String? = null,
