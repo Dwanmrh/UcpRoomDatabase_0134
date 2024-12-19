@@ -17,15 +17,16 @@ import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.launch
 
 class MataKuliahViewModel(private val repositoryMataKuliah: RepositoryMataKuliah) : ViewModel() {
 
     var uiState by mutableStateOf(MkUiState())
-    val MkUiState: StateFlow<MkUiState> = repositoryMataKuliah.getAllMk()
+    val mkUiState: StateFlow<MkUiState> = repositoryMataKuliah.getAllMk()
         .filterNotNull()
         .map {
             MkUiState(
-                listDsn = it.toList(),
+                listMk = it.toList(),
                 isLoading = false,
             )
         }
@@ -49,15 +50,57 @@ class MataKuliahViewModel(private val repositoryMataKuliah: RepositoryMataKuliah
                 isLoading = true,
             )
         )
+
+    private fun validateFieldsMk(): Boolean {
+        val event = uiState.mataKuliahEvent
+        val errorState = FormErrorStateMk(
+            kodeMk = if (event.kodeMk.isNotEmpty()) null else "Kode Mata Kuliah Tidak Boleh Kosong",
+            namaMk = if (event.namaMk.isNotEmpty()) null else "Nama Mata Kuliah Tidak Boleh Kosong",
+            sks = if (event.sks.isNotEmpty()) null else "SKS Mata Kuliah Tidak Boleh Kosong",
+            semester = if (event.semester.isNotEmpty()) null else "Semester Mata Kuliah Tidak Boleh Kosong",
+            jenis = if (event.jenis.isNotEmpty()) null else "Jenis Mata Kuliah Tidak Boleh Kosong",
+            dosenPu = if (event.dosenPu.isNotEmpty()) null else "Dosen Pembimbing Tidak Boleh Kosong",
+        )
+        uiState = uiState.copy(isEntryValid = errorState)
+        return errorState.isValid()
+    }
+
+    fun saveDataMk() {
+        val currentEvent = uiState.mataKuliahEvent
+        if (validateFieldsMk()) {
+            viewModelScope.launch {
+                try {
+                    repositoryMataKuliah.insertMk(currentEvent.toMataKuliahEntity())
+                    uiState = uiState.copy(
+                        snackBarMessage = "Data Berhasil Disimpan",
+                        mataKuliahEvent = MataKuliahEvent(),
+                        isEntryValid = FormErrorStateMk()
+                    )
+                } catch (e: Exception) {
+                    uiState = uiState.copy(
+                        snackBarMessage = "Data Gagal Disimpan"
+                    )
+                }
+            }
+        } else {
+            uiState = uiState.copy(
+                snackBarMessage = "Input Tidak Valid. Periksa Kembali Data Anda"
+            )
+        }
+    }
+
+    fun resetSnackbarMessageMk() {
+        uiState = uiState.copy(snackBarMessage = null)
+    }
 }
 
 data class MkUiState(
-    val listDsn:List<MataKuliah> = listOf(),
+    val listMk:List<MataKuliah> = listOf(),
     val isLoading: Boolean = false,
     val isError: Boolean = false,
     val errorMessage: String = "",
-    val mataKuliahEvent: MataKuliahEvent,
-    val isEntryValid: FormErrorState = FormErrorState(),
+    val mataKuliahEvent: MataKuliahEvent = MataKuliahEvent(),
+    val isEntryValid: FormErrorStateMk = FormErrorStateMk(),
     val snackBarMessage: String? = null
 )
 
