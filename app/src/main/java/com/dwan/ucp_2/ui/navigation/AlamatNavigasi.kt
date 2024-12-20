@@ -5,11 +5,11 @@ interface AlamatNavigasi {
 }
 
 object DestinasiInsertDsn: AlamatNavigasi {
-    override val route: String = "insert_dsn"
+    override val route: String = "insert_dosen"
 }
 
 object DestinasiInsertMk: AlamatNavigasi {
-    override val route: String = "insert_mk"
+    override val route: String = "insert_mata_kuliah"
 }
 
 object DestinasiHome: AlamatNavigasi {
@@ -21,17 +21,17 @@ object DestinasiDosen: AlamatNavigasi {
 }
 
 object DestinasiMataKuliah: AlamatNavigasi {
-    override val route: String = "mataKuliah"
+    override val route: String = "mata_kuliah"
 }
 
 object DestinasiUpdate: AlamatNavigasi {
-    override val route: String = "update"
-    const val kodeMk = "mk"
+    override val route: String = "update_mata_kuliah"
+    const val kodeMk = "kodeMk"
     val routeWithArg = "$route/{$kodeMk}"
 }
 
 object DestinasiDetail: AlamatNavigasi {
-    override val route: String = "detail"
-    const val kodeMk = "mk"
+    override val route: String = "detail_mata_kuliah"
+    const val kodeMk = "kodeMk"
     val routeWithArg = "$route/{$kodeMk}"
 }
