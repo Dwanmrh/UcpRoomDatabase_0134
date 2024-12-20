@@ -3,7 +3,8 @@ package com.dwan.ucp_2.data.entity
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
-@Entity(tableName = "MataKuliah")
+
+@Entity(tableName = "matakuliah")
 data class MataKuliah(
     @PrimaryKey
     val kodeMk: String,
