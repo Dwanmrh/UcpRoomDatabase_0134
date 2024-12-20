@@ -8,6 +8,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material3.Button
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Scaffold
@@ -21,10 +23,12 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.dwan.ucp_2.ui.customwidget.AppBar
+import com.dwan.ucp_2.ui.navigation.AlamatNavigasi
 import com.dwan.ucp_2.ui.viewmodel.DosenEvent
 import com.dwan.ucp_2.ui.viewmodel.DosenUiState
 import com.dwan.ucp_2.ui.viewmodel.DosenViewModel
@@ -35,7 +39,8 @@ import kotlinx.coroutines.launch
 @Composable
 fun InsertDosenView(
     onBack: () -> Unit,
-    onNavigate: () -> Unit,
+    onNavigateDosen: () -> Unit,
+    onAddDosen: () -> Unit = { },
     modifier: Modifier = Modifier,
     viewModel: DosenViewModel = viewModel(factory = PenyediaViewModel.Factory)
 ) {
@@ -65,27 +70,31 @@ fun InsertDosenView(
             AppBar(
                 onBack = onBack,
                 showBackButton = true,
-                title = "Tambah Mata Kuliah"
+                title = "Tambah Dosen"
             )
+            FormDosen(
+                dosenEvent = uiState.dosenEvent,
+                onValueChange = { viewModel.updateState(it) },
+                errorState = uiState.isEntryValid,
+                modifier = Modifier.fillMaxWidth()
+            )
+            Spacer(modifier = Modifier.height(20.dp))
+
+            Button(
+                onClick = {
+                    viewModel.saveData()
+                    onNavigateDosen()
+                },
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Text("Save")
+            }
         }
     }
 }
 
-
-@Composable
-fun InsertBodyDosen(
-    modifier: Modifier = Modifier,
-    onValueChange:(DosenEvent) -> Unit,
-    uiState: DosenUiState,
-    onClick: () -> Unit
-) {
-    Column(
-        modifier = Modifier.fillMaxWidth(),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-
-    }
+object DestinasiInsertDsn : AlamatNavigasi {
+    override val route: String = "insert_dosen"
 }
 
 @Preview(showBackground = true)
@@ -119,11 +128,13 @@ fun FormDosen(
             modifier = Modifier.fillMaxWidth(),
             value = dosenEvent.nidn,
             onValueChange = {
-                onValueChange(dosenEvent.copy(nama = it))
+                onValueChange(dosenEvent.copy(nidn = it))
             },
             label = { Text("NIDN") },
             isError = errorState.nidn != null,
             placeholder = { Text("Masukkan NIDN")},
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
+
         )
         Text(
             text = errorState.nidn ?: "",
