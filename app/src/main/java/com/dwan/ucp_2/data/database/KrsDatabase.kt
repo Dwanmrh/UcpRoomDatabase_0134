@@ -10,7 +10,7 @@ import com.dwan.ucp_2.data.entity.Dosen
 import com.dwan.ucp_2.data.entity.MataKuliah
 import kotlin.concurrent.Volatile
 
-@Database(entities = [Dosen::class], [MataKuliah::class], version = 1, exportSchema = false)
+@Database(entities = [Dosen::class, MataKuliah::class], version = 1, exportSchema = false)
 abstract class KrsDatabase: RoomDatabase() {
     abstract fun dosenDao(): DosenDao
     abstract fun mataKuliahDao(): MataKuliahDao
@@ -29,6 +29,5 @@ abstract class KrsDatabase: RoomDatabase() {
                     .build().also { Instance = it }
             })
         }
-
     }
 }
