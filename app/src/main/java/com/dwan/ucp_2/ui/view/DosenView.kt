@@ -11,6 +11,8 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Face
+import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
@@ -40,11 +42,12 @@ import com.dwan.ucp_2.ui.viewmodel.DosenViewModel
 import com.dwan.ucp_2.ui.viewmodel.PenyediaViewModel
 import kotlinx.coroutines.launch
 
+
 @Composable
 fun DosenView(
     onBack: () -> Unit,
-    onNavigate: () -> Unit,
-    onAddDosen:() -> Unit,
+    onNavigateDosen: () -> Unit,
+    onAddDosen:() -> Unit = { },
     viewModel: DosenViewModel = viewModel(factory = PenyediaViewModel.Factory),
     modifier: Modifier = Modifier
 ) {
@@ -73,7 +76,7 @@ fun DosenView(
 
         BodyDosenView(
             dosenUiState = dosenUiState,
-            onClick = {(it)},
+            onClick = { },
             modifier = Modifier.padding(innerPadding)
         )
     }
@@ -185,7 +188,7 @@ fun CardDosen(
                 modifier = Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Icon(imageVector = Icons.Filled.Person, contentDescription = "")
+                Icon(imageVector = Icons.Filled.Info, contentDescription = "")
                 Spacer(modifier = Modifier.padding(5.dp))
                 Text(
                     text = dsn.nidn,
@@ -197,7 +200,7 @@ fun CardDosen(
                 modifier = Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Icon(imageVector = Icons.Filled.Person, contentDescription = "")
+                Icon(imageVector = Icons.Filled.Face, contentDescription = "")
                 Spacer(modifier = Modifier.padding(5.dp))
                 Text(
                     text = dsn.jenisKelamin,
