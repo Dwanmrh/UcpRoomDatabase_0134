@@ -9,7 +9,7 @@ object DestinasiInsertDsn: AlamatNavigasi {
 }
 
 object DestinasiInsertMk: AlamatNavigasi {
-    override val route: String = "insert_mata_kuliah"
+    override val route: String = "insert_mk"
 }
 
 object DestinasiHome: AlamatNavigasi {
@@ -25,13 +25,13 @@ object DestinasiMataKuliah: AlamatNavigasi {
 }
 
 object DestinasiUpdate: AlamatNavigasi {
-    override val route: String = "update_mata_kuliah"
+    override val route: String = "update_mk"
     const val kodeMk = "kodeMk"
     val routeWithArg = "$route/{$kodeMk}"
 }
 
 object DestinasiDetail: AlamatNavigasi {
-    override val route: String = "detail_mata_kuliah"
+    override val route: String = "detail_mk"
     const val kodeMk = "kodeMk"
     val routeWithArg = "$route/{$kodeMk}"
 }
