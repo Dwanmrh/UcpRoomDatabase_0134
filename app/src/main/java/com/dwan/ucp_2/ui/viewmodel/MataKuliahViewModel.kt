@@ -22,6 +22,13 @@ import kotlinx.coroutines.launch
 class MataKuliahViewModel(private val repositoryMataKuliah: RepositoryMataKuliah) : ViewModel() {
 
     var uiState by mutableStateOf(MkUiState())
+
+    fun updateState(mataKuliahEvent: MataKuliahEvent) {
+        uiState = uiState.copy(
+            mataKuliahEvent = mataKuliahEvent
+        )
+    }
+
     val mkUiState: StateFlow<MkUiState> = repositoryMataKuliah.getAllMk()
         .filterNotNull()
         .map {
