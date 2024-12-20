@@ -21,6 +21,52 @@ import kotlinx.coroutines.launch
 class DosenViewModel(private val repositoryDosen: RepositoryDosen) : ViewModel() {
 
     var uiState by mutableStateOf(DosenUiState())
+
+    fun updateState(dosenEvent: DosenEvent) {
+        uiState = uiState.copy(
+            dosenEvent = dosenEvent
+        )
+    }
+
+    private fun validateFields(): Boolean {
+        val event = uiState.dosenEvent
+        val errorState = FormErrorState(
+            nidn = if (event.nidn.isNotEmpty()) null else "NIDN Tidak Boleh Kosong",
+            nama = if (event.nama.isNotEmpty()) null else "Nama Tidak Boleh Kosong",
+            jenisKelamin = if (event.jenisKelamin.isNotEmpty()) null else "Jenis Kelamin Tidak Boleh Kosong",
+        )
+        uiState = uiState.copy(isEntryValid = errorState)
+        return errorState.isValid()
+    }
+
+    fun saveData() {
+        val currentEvent = uiState.dosenEvent
+        if (validateFields()) {
+            viewModelScope.launch {
+                try {
+                    repositoryDosen.insertDosen(currentEvent.toDosenEntity())
+                    uiState = uiState.copy(
+                        snackBarMessage = "Data berhasil disimpan",
+                        dosenEvent = DosenEvent(), // Reset input form
+                        isEntryValid = FormErrorState() // Reset error state
+                    )
+                } catch (e: Exception) {
+                    uiState = uiState.copy(
+                        snackBarMessage = "Data gagal disimpan"
+                    )
+                }
+            }
+        } else {
+            uiState = uiState.copy(
+                snackBarMessage = "Input tidak valid. Periksa kembali data anda"
+            )
+        }
+    }
+
+    fun resetSnackBarMessage() {
+        uiState = uiState.copy(snackBarMessage = null)
+    }
+
     val dosenUiState: StateFlow<DosenUiState> = repositoryDosen.getAllDosen()
         .filterNotNull()
         .map {
@@ -36,7 +82,7 @@ class DosenViewModel(private val repositoryDosen: RepositoryDosen) : ViewModel()
         .catch {
             emit(
                 DosenUiState(
-                    isLoading =false,
+                    isLoading = false,
                     isError = true,
                     errorMessage = it.message ?: "Terjadi Kesalahan"
                 )
@@ -49,46 +95,7 @@ class DosenViewModel(private val repositoryDosen: RepositoryDosen) : ViewModel()
                 isLoading = true,
             )
         )
-
-    private fun validateFields(): Boolean {
-        val event = uiState.dosenEvent
-        val errorState = FormErrorState(
-            nidn = if (event.nidn.isNotEmpty()) null else "NIDN Tidak Boleh Kosong",
-            nama = if (event.nama.isNotEmpty()) null else "Nama Tidak Boleh Kosong",
-            jenisKelamin = if (event.jenisKelamin.isNotEmpty()) null else "Jenis Kelamin Tidak Boleh Kosong"
-        )
-        uiState = uiState.copy(isEntryValid = errorState)
-        return errorState.isValid()
     }
-
-    fun saveData() {
-        val currentEvent = uiState.dosenEvent
-        if (validateFields()) {
-            viewModelScope.launch {
-                try {
-                    repositoryDosen.insertDosen(currentEvent.toDosenEntity())
-                    uiState = uiState.copy(
-                        snackBarMessage = "Data Berhasil Disimpan",
-                        dosenEvent = DosenEvent(),
-                        isEntryValid = FormErrorState()
-                    )
-                } catch (e: Exception) {
-                    uiState = uiState.copy(
-                        snackBarMessage = "Data Gagal Disimpan"
-                    )
-                }
-            }
-        } else {
-            uiState = uiState.copy(
-                snackBarMessage = "Input Tidak Valid. Periksa Kembali Data Anda"
-            )
-        }
-    }
-
-    fun resetSnackBarMessage() {
-        uiState = uiState.copy(snackBarMessage = null)
-    }
-}
 
 data class DosenUiState(
     val listDsn:List<Dosen> = listOf(),
@@ -105,7 +112,7 @@ data class FormErrorState(
     val nama: String? = null,
     val jenisKelamin: String? = null
 ) {
-    fun isValid(): Boolean {
+        fun isValid(): Boolean {
         return nidn == null && nama == null && jenisKelamin == null
     }
 }
